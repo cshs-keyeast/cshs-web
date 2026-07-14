@@ -75,6 +75,7 @@ export async function POST(req: Request) {
           password: hash,
           provider: 'google',
           email: userId,
+          affiliationSchoolId: 1,
         }
       });
       return NextResponse.json({ user });
