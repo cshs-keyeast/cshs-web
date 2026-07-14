@@ -3,6 +3,7 @@ import client from "@libs/server/client";
 import { getServerSession } from "next-auth";
 import getServerSessionCM from "@libs/server/session";
 import { NextResponse } from "next/server";
+import type { Prisma } from "@prisma/client";
 
 // Add a new todo to the other user
 async function PostHandler(request:Request) {
@@ -129,93 +130,93 @@ async function GetHandler(request:Request) {
     }, { status: 400 });
   }
 
-  const beforeTodo:any = await client.$queryRaw`
-    SELECT 
-      t.id, 
-      t.title, 
-      t.description, 
-      t."createdAt", 
-      t.deadline, 
-      t.type,
-      s.name as senderName, 
-      s.profile as senderProfile, 
-      r.name as receiverName, 
-      r.profile as receiverProfile, 
-      t.status,
-      (SELECT COUNT(*) FROM "Todo" AS rt WHERE rt."mainTodoId" = t.id) AS relationTodoCount,
-      (SELECT COUNT(*) FROM "Todo" AS rt WHERE rt."mainTodoId" = t.id AND rt.status = 1) AS relationTodoStatusCount
-    FROM "Todo" AS t
-    LEFT JOIN "User" AS s ON t."senderId" = s.id
-    LEFT JOIN "User" AS r ON t."receiverId" = r.id
-    WHERE 
-      t."senderId" = (SELECT id FROM "User" WHERE email = ${session.user.email}) AND
-      t."receiverId" IS NULL AND
-      t.status = 0 AND
-      (${search ? `(t.title LIKE ${'%' + search + '%'} OR t.description LIKE ${'%' + search + '%'})` : `1=1`})
-    ${sort && order ? `ORDER BY t.${sort} ${order}` : ``}
-    LIMIT 100;
-  `;
+  const orderBy = sort && order
+    ? { [sort]: order } as Prisma.TodoOrderByWithRelationInput
+    : undefined;
+  const searchFilter:Prisma.TodoWhereInput = search ? {
+    OR: [
+      { title: { contains: search } },
+      { description: { contains: search } }
+    ]
+  } : {};
+  const todoSelect = {
+    id: true,
+    title: true,
+    description: true,
+    createdAt: true,
+    deadline: true,
+    type: true,
+    status: true,
+    sender: {
+      select: {
+        name: true,
+        profile: true
+      }
+    },
+    receiver: {
+      select: {
+        name: true,
+        profile: true
+      }
+    },
+    relationTodo: {
+      select: {
+        status: true
+      }
+    }
+  } as const satisfies Prisma.TodoSelect;
+  type TodoWithRelations = Prisma.TodoGetPayload<{ select: typeof todoSelect }>;
 
-  const finishedTodo:any = await client.$queryRaw`
-    SELECT 
-      t.id, 
-      t.title, 
-      t.description, 
-      t."createdAt", 
-      t.deadline, 
-      t.type,
-      s.name as senderName, 
-      s.profile as senderProfile, 
-      r.name as receiverName, 
-      r.profile as receiverProfile, 
-      t.status,
-      (SELECT COUNT(*) FROM "Todo" AS rt WHERE rt."mainTodoId" = t.id) AS relationTodoCount,
-      (SELECT COUNT(*) FROM "Todo" AS rt WHERE rt."mainTodoId" = t.id AND rt.status = 1) AS relationTodoStatusCount
-    FROM "Todo" AS t
-    LEFT JOIN "User" AS s ON t."senderId" = s.id
-    LEFT JOIN "User" AS r ON t."receiverId" = r.id
-    WHERE 
-      t."senderId" = (SELECT id FROM "User" WHERE email = ${session.user.email}) AND
-      t."receiverId" IS NULL AND
-      t.status = 1 AND
-      (${search ? `(t.title LIKE ${'%' + search + '%'} OR t.description LIKE ${'%' + search + '%'})` : `1=1`})
-    ${sort && order ? `ORDER BY t.${sort} ${order}` : ``}
-    LIMIT 100;
-  `;
+  const [beforeTodo, finishedTodo] = await Promise.all([
+    client.todo.findMany({
+      where: {
+        sender: {
+          email: session.user.email
+        },
+        receiverId: null,
+        status: 0,
+        ...searchFilter
+      },
+      select: todoSelect,
+      orderBy,
+      take: 100
+    }),
+    client.todo.findMany({
+      where: {
+        sender: {
+          email: session.user.email
+        },
+        receiverId: null,
+        status: 1,
+        ...searchFilter
+      },
+      select: todoSelect,
+      orderBy,
+      take: 100
+    })
+  ]);
+
+  const formatTodo = (todo:TodoWithRelations) => ({
+    id: todo.id.toString(),
+    relationTodoCount: todo.relationTodo.length.toString(),
+    relationTodoStatusCount: todo.relationTodo.filter((relationTodo) => relationTodo.status === 1).length.toString(),
+    title: todo.title,
+    description: todo.description,
+    createdAt: todo.createdAt,
+    deadline: todo.deadline,
+    type: todo.type,
+    senderName: todo.sender.name,
+    senderProfile: todo.sender.profile,
+    receiverName: todo.receiver?.name ?? null,
+    receiverProfile: todo.receiver?.profile ?? null,
+    status: todo.status
+  });
 
   return NextResponse.json({
     success: true,
     todo: {
-      before: beforeTodo.map((todo:any) => ({
-        id: todo.id.toString(),
-        relationTodoCount: todo.relationtodocount.toString(),
-        relationTodoStatusCount: todo.relationtodostatuscount.toString(),
-        title: todo.title,
-        description: todo.description,
-        createdAt: todo.createdAt,
-        deadline: todo.deadline,
-        type: todo.type,
-        senderName: todo.sendername,
-        senderProfile: todo.senderprofile,
-        receiverName: todo.receivername,
-        receiverProfile: todo.receiverprofile,
-        status: todo.status
-      })),
-      finished: finishedTodo.map((todo:any) => ({
-        id: todo.id.toString(),
-        relationTodoCount: todo.relationtodocount.toString(),
-        relationTodoStatusCount: todo.relationtodostatuscount.toString(),
-        title: todo.title,
-        description: todo.description,
-        createdAt: todo.createdAt,
-        deadline: todo.deadline,
-        type: todo.type,
-        senderName: todo.sendername,
-        senderProfile: todo.senderprofile,
-        receiverName: todo.receivername,
-        receiverProfile: todo.receiverprofile,
-        status: todo.status
-      }))
+      before: beforeTodo.map(formatTodo),
+      finished: finishedTodo.map(formatTodo)
     }
   }, { status: 200 });
 }
