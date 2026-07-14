@@ -43,7 +43,8 @@ export async function POST(req: Request) {
           class: data.class,
           number: data.number,
           provider: 'local',
-          email: '' + data.userId + '@school.local'
+          email: '' + data.userId + '@school.local',
+          affiliationSchoolId: 1
         }
       });
     });
@@ -60,7 +61,8 @@ export async function POST(req: Request) {
               type: 1,
               password: null,
               provider: 'local',
-              email: '' + data.userId + '@school.local'
+              email: '' + data.userId + '@school.local',
+              affiliationSchoolId: 1
             }
           });
           
