@@ -76,7 +76,7 @@ const Login: NextPage = () => {
         <div className='fixed right-0 left-0 bottom-7 hidden justify-center items-center md:flex'>
           <div className='mx-auto p-3 rounded-xl bg-blue-100 text-sm md:block hidden'>
             {/* <div className='text-blue-500 text-center'>비밀번호 변경 등 문의: <span className='underline'>14c76@csh-h.gne.go.kr</span></div> */}
-            <div className='text-blue-500 text-center'>교사 아이디는 기존과 동일, 학생 아이디는 학번입니다.<br/>초기 비밀번호는 아이디와 동일합니다. 로그인 후 반드시 비밀번호를 변경하시기 바랍니다.{/*<br/><Link href='http://10.15.150.20:8888/68267cfd-7e11-448c-af27-c1c1bca759ad/-------------------39a74ba6-478a-4f41-ad54-3f19a0b5c6b6' target={'_blank'}>이용 가이드를 읽어보세요: <span className='underline'>이용 가이드 보기</span></Link></div>*/}
+            <div className='text-blue-500 text-center'>교사 아이디는 기존과 동일, 학생 아이디는 학번입니다.<br/>초기 비밀번호는 아이디와 동일합니다. 로그인 후 반드시 비밀번호를 변경하시기 바랍니다.{/*<br/><Link href='http://10.15.150.20:8888/68267cfd-7e11-448c-af27-c1c1bca759ad/-------------------39a74ba6-478a-4f41-ad54-3f19a0b5c6b6' target={'_blank'}>이용 가이드를 읽어보세요: <span className='underline'>이용 가이드 보기</span></Link>*/}</div>
           </div>
         </div>
         <div className='absolute z-20 left-1/2 -translate-x-1/2 top-1/2 -translate-y-1/2 w-full xl:w-[750px] mt-7'>
