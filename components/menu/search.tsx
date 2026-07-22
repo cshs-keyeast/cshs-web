@@ -167,7 +167,7 @@ export default function SearchMenu() {
           </div>
         </div>
       </Link>
-      <Link href="http://10.15.150.20:8888/68267cfd-7e11-448c-af27-c1c1bca759ad/-------------------39a74ba6-478a-4f41-ad54-3f19a0b5c6b6" target="_blank">
+      {/*<Link href="http://10.15.150.20:8888/68267cfd-7e11-448c-af27-c1c1bca759ad/-------------------39a74ba6-478a-4f41-ad54-3f19a0b5c6b6" target="_blank">
         <div onClick={() => {
         }} className="px-4 py-[10px] xl:flex hidden transition-all rounded-xl items-center justify-between cursor-pointer hover:bg-gray-100 active:bg-gray-200">
           <div className="flex items-center space-x-3">
@@ -187,7 +187,7 @@ export default function SearchMenu() {
             </svg>
           </div>
         </div>
-      </Link>
+      </Link>*/}
     </>
   )
 }
