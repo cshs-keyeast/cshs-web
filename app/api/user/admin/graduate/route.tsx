@@ -17,5 +17,5 @@ export async function POST(req: Request) {
     where: { type: 0, grade: 3 },
     data: { type: 10 }
   });
-  return NextResponse.json({ ok: true });
+  return NextResponse.json({ success: true });
 }
