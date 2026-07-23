@@ -12,8 +12,8 @@ import Input from "@components/input";
 import { red } from "@node_modules/@mui/material/colors";
 import { CSVLink } from "react-csv";
 
-
 const fetcher = (url: string) => fetch(url).then(res => res.json());
+
 function getAdminLabel(admin: number) {
   const labels = [];
   if ((admin & 1) === 1) labels.push(<div key="seat" className="bg-violet-100 px-2 py-1 text-violet-700 rounded-full">자리배치</div>);
@@ -57,8 +57,7 @@ export default function AdminUserPanel() {
   const [bulkEditModal, setBulkEditModal] = useState(false);
   const [resetModal, setResetModal] = useState(false);
   const [resetUserId, setResetUserId] = useState<string | null>(null);
-
-  // input states for add/edit
+  const [graduationModal, setGraduationModal] = useState(false);
   const [editName, setEditName] = useState('');
   const [editUserId, setEditUserId] = useState('');
   const [editType, setEditType] = useState<'student' | 'teacher'>('student');
@@ -111,6 +110,28 @@ export default function AdminUserPanel() {
     mutate();
     dispatch(setNotification({ type: 'success', text: '삭제 완료' }));
   };
+
+const handleGraduation = async () => {
+  try {
+    const res = await fetch('/api/user/admin/graduate', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' }
+    });
+
+    if (!res.ok) {
+      const data = await res.json().catch(() => null);
+      dispatch(setNotification({ type: 'error', text: data?.error ?? '졸업 처리에 실패했습니다.' }));
+      return;
+    }
+
+    setGraduationModal(false);
+    setCheckedIds([]);
+    mutate();
+    dispatch(setNotification({ type: 'success', text: '3학년 일괄 졸업 완료' }));
+  } catch {
+    dispatch(setNotification({ type: 'error', text: '졸업 처리 중 오류가 발생했습니다.' }));
+  }
+};
 
   const handleEdit = (user: any) => {
     setEditUser(user);
@@ -173,7 +194,7 @@ export default function AdminUserPanel() {
     setAddPassword('');
   };
 
-  const handelBulkUpload = async ({ target }) => {
+  const handelBulkUpload = async ({ target }: any) => {
     const file = target.files[0];
     if (!file) return;
     setBulkFile(file);
@@ -239,6 +260,11 @@ export default function AdminUserPanel() {
           <div onClick={() => setSelectedTab('teacher')} className={ selectedTab === 'teacher' ? "bg-white px-8 py-2 rounded-full flex items-center justify-center font-bold cursor-pointer" : "px-8 py-2 rounded-full flex items-center justify-center cursor-pointer" }>교사</div>
         </div>
         <div className="flex space-x-2">
+          {selectedTab === 'student' && (
+            <Button color="blue" fn={() => setGraduationModal(true)}>
+              <div className="px-5">3학년 일괄 졸업</div>
+            </Button>
+          )}
           <Button color="teal" fn={() => setBulkEditModal(true)}><div className="px-5">사용자 일괄 수정</div></Button>
           <Button color="lightblue" fn={() => setAddModal(true)}><div className="px-5">사용자 추가</div></Button>
           <Button color="red" fn={handleDelete} disabled={!checkedIds.length}><div className="px-4">선택 삭제</div></Button>
@@ -454,6 +480,20 @@ export default function AdminUserPanel() {
               <div className="text-gray-500 mb-6">초기화하면 해당 사용자의 비밀번호가 삭제됩니다. 확인 후 진행해주세요.</div>
               <div className="flex justify-end space-x-2">
                 <Button color="red" fn={confirmResetPassword}><div className="px-6">초기화</div></Button>
+              </div>
+            </div>
+          </Modal>
+        )}
+        {graduationModal && (
+          <Modal handleClose={() => setGraduationModal(false)}>
+            <div className="w-full md:w-[360px] p-2">
+              <div className="font-bold text-lg mb-2">3학년 일괄 졸업 처리</div>
+              <div className="text-gray-600 mb-6 text-sm leading-relaxed">
+                현재 등록된 모든 3학년 학생을 졸업 처리하시겠습니까?
+              </div>
+              <div className="flex justify-end space-x-2">
+                <Button color="lightblue" fn={() => setGraduationModal(false)}><div className="px-4">취소</div></Button>
+                <Button color="blue" fn={handleGraduation}><div className="px-6">졸업 처리</div></Button>
               </div>
             </div>
           </Modal>
