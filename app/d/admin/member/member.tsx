@@ -249,7 +249,7 @@ export default function AdminUserPanel() {
         </div>
         <div className="flex space-x-2">
           {selectedTab === 'student' && (
-            <Button color="black" fn={() => setGraduationModal(true)}>
+            <Button color="blue" fn={() => setGraduationModal(true)}>
               <div className="px-5">3학년 일괄 졸업</div>
             </Button>
           )}
@@ -475,13 +475,13 @@ export default function AdminUserPanel() {
         {graduationModal && (
           <Modal handleClose={() => setGraduationModal(false)}>
             <div className="w-full md:w-[360px] p-2">
-              <div className="font-bold text-lg mb-2 text-orange-600">3학년 일괄 졸업 처리</div>
+              <div className="font-bold text-lg mb-2 text-white-600">3학년 일괄 졸업 처리</div>
               <div className="text-gray-600 mb-6 text-sm leading-relaxed">
                 현재 등록된 모든 3학년 학생을 졸업 처리하시겠습니까?
               </div>
               <div className="flex justify-end space-x-2">
-                <Button color="gray" fn={() => setGraduationModal(false)}><div className="px-4">취소</div></Button>
-                <Button color="black" fn={handleGraduation}><div className="px-6">졸업 처리</div></Button>
+                <Button color="lightblue" fn={() => setGraduationModal(false)}><div className="px-4">취소</div></Button>
+                <Button color="blue" fn={handleGraduation}><div className="px-6">졸업 처리</div></Button>
               </div>
             </div>
           </Modal>
