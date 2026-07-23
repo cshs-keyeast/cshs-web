@@ -111,15 +111,27 @@ export default function AdminUserPanel() {
     dispatch(setNotification({ type: 'success', text: '삭제 완료' }));
   };
 
-  const handleGraduation = async () => {
-    await fetch('/api/user/admin/graduate', {
+const handleGraduation = async () => {
+  try {
+    const res = await fetch('/api/user/admin/graduate', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' }
     });
+
+    if (!res.ok) {
+      const data = await res.json().catch(() => null);
+      dispatch(setNotification({ type: 'error', text: data?.error ?? '졸업 처리에 실패했습니다.' }));
+      return;
+    }
+
     setGraduationModal(false);
+    setCheckedIds([]);
     mutate();
     dispatch(setNotification({ type: 'success', text: '3학년 일괄 졸업 완료' }));
-  };
+  } catch {
+    dispatch(setNotification({ type: 'error', text: '졸업 처리 중 오류가 발생했습니다.' }));
+  }
+};
 
   const handleEdit = (user: any) => {
     setEditUser(user);
