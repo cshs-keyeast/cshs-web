@@ -487,7 +487,7 @@ const handleGraduation = async () => {
         {graduationModal && (
           <Modal handleClose={() => setGraduationModal(false)}>
             <div className="w-full md:w-[360px] p-2">
-              <div className="font-bold text-lg mb-2 text-white-600">3학년 일괄 졸업 처리</div>
+              <div className="font-bold text-lg mb-2">3학년 일괄 졸업 처리</div>
               <div className="text-gray-600 mb-6 text-sm leading-relaxed">
                 현재 등록된 모든 3학년 학생을 졸업 처리하시겠습니까?
               </div>
