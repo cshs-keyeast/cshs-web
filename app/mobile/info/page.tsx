@@ -43,7 +43,7 @@ export default function Code() {
               <div>
                 13기 - 김준희, 박찬경, 이재준<br/>
                 14기 - 성인혁, 지민겸<br/>
-                15기 - 권승찬<br/r>
+                15기 - 권승찬<br/>
                 16기 - 안준표
               </div>
             </div><br/><br/>
