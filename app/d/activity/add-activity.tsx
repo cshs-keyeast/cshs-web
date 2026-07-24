@@ -42,14 +42,6 @@ export default function AddActivityButton() {
     if(time.length <= 0) {
       return dispatch(setNotification({ type: "error", text: "시간을 선택하세요" }));
     }
-    if (time.length > 1) {
-      const sortedTime = [...time].sort((a, b) => a - b);
-      for (let i = 1; i < sortedTime.length; i++) {
-        if (sortedTime[i] !== sortedTime[i - 1] + 1) {
-          return dispatch(setNotification({ type: "error", text: "시간은 연속적이어야 해요" }));
-        }
-      }
-    }
     if(!place) {
       return dispatch(setNotification({ type: "error", text: "장소를 선택하세요" }));
     }
