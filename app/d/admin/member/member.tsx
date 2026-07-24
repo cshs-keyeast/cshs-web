@@ -118,7 +118,7 @@ const handleGraduation = async () => {
       headers: { 'Content-Type': 'application/json' }
     });
 
-    if (!res.ok) {
+    if (!res.success) {
       const data = await res.json().catch(() => null);
       dispatch(setNotification({ type: 'error', text: data?.error ?? '졸업 처리에 실패했습니다.' }));
       return;
