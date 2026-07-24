@@ -151,9 +151,36 @@ export default function ActivityList() {
                             "$1년 $2월 $3일"
                             )
                           : ""}<br/>
-                          {displayPerio(+activity.perio.split(',').sort()[0], undefined, activity.date)}
-                          {' ~ '}
-                          {displayPerio(+activity.perio.split(',').sort(function (a:number, b:number) {return b - a;})[0], undefined, activity.date)}
+                          {(() => {
+                            if (!activity.perio) return "";
+                            const sorted = activity.perio
+                              .split(',')
+                              .map((p: string) => parseInt(p.trim(), 10))
+                              .filter((n: number) => !isNaN(n))
+                              .sort((a: number, b: number) => a - b);
+                            if (sorted.length === 0) return "";
+                            const groups: number[][] = [];
+                            let currentGroup: number[] = [sorted[0]];
+                            for (let i = 1; i < sorted.length; i++) {
+                              if (sorted[i] === sorted[i - 1] + 1) {
+                                currentGroup.push(sorted[i]);
+                              } else {
+                                groups.push(currentGroup);
+                                currentGroup = [sorted[i]];
+                              }
+                            }
+                            groups.push(currentGroup);
+                            return groups
+                              .map((group) => {
+                                if (group.length === 1) {
+                                  return displayPerio(group[0], undefined, activity.date);
+                                }
+                                const start = displayPerio(group[0], undefined, activity.date);
+                                const end = displayPerio(group[group.length - 1], undefined, activity.date);
+                                return `${start} ~ ${end}`;
+                              })
+                              .join(', ');
+                          })()}
                         </td>
                       </tr>
                     )
@@ -283,9 +310,36 @@ export default function ActivityList() {
                             )
                           : ""}
                           <br/>
-                          {displayPerio(+activity.perio.split(',').sort()[0], undefined, activity.date)}
-                          {' ~ '}
-                          {displayPerio(+activity.perio.split(',').sort(function (a:number, b:number) {return b - a;})[0], undefined, activity.date)}
+                          {(() => {
+                            if (!activity.perio) return "";
+                            const sorted = activity.perio
+                              .split(',')
+                              .map((p: string) => parseInt(p.trim(), 10))
+                              .filter((n: number) => !isNaN(n))
+                              .sort((a: number, b: number) => a - b);
+                            if (sorted.length === 0) return "";
+                            const groups: number[][] = [];
+                            let currentGroup: number[] = [sorted[0]];
+                            for (let i = 1; i < sorted.length; i++) {
+                              if (sorted[i] === sorted[i - 1] + 1) {
+                                currentGroup.push(sorted[i]);
+                              } else {
+                                groups.push(currentGroup);
+                                currentGroup = [sorted[i]];
+                              }
+                            }
+                            groups.push(currentGroup);
+                            return groups
+                              .map((group) => {
+                                if (group.length === 1) {
+                                  return displayPerio(group[0], undefined, activity.date);
+                                }
+                                const start = displayPerio(group[0], undefined, activity.date);
+                                const end = displayPerio(group[group.length - 1], undefined, activity.date);
+                                return `${start} ~ ${end}`;
+                              })
+                              .join(', ');
+                          })()}
                         </td>
                       </tr>
                     )
