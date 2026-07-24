@@ -29,7 +29,7 @@ function LoginContainer() {
 const Login: NextPage = () => {
   const pathname = useSearchParams();
   const rawCallbackUrl = pathname.get('callbackUrl');
-  const callbackUrl = getSafeCallbackUrl(rawCallbackUrl);
+const callbackUrl = encodeURIComponent(getSafeCallbackUrl(rawCallbackUrl));
   const error = pathname.get('error');
   const dispatch = useDispatch();
 
