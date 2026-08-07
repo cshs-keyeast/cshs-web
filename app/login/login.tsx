@@ -12,12 +12,6 @@ import Input from '@components/input';
 import Button from '@components/button';
 import Link from 'next/link';
 
-function getSafeCallbackUrl(url: string | null): string {
-  if (!url || url === 'undefined' || url === 'null') return '/d/home';
-  if (!url.startsWith('/') || url.startsWith('//')) return '/d/home';
-  return url;
-}
-
 function LoginContainer() {
   return (
     <Suspense>
@@ -28,8 +22,7 @@ function LoginContainer() {
 
 const Login: NextPage = () => {
   const pathname = useSearchParams();
-  const rawCallbackUrl = pathname.get('callbackUrl');
-const callbackUrl = encodeURIComponent(getSafeCallbackUrl(rawCallbackUrl));
+  const callbackUrl = pathname.get('callbackUrl');
   const error = pathname.get('error');
   const dispatch = useDispatch();
 
