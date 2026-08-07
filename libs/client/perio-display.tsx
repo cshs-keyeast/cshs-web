@@ -17,7 +17,7 @@ export function isWeekend(date?: Date | string) {
   return day === 0 || day === 6; // 0: 일요일, 6: 토요일
 };
 
-export function formatPerioRange(perio: string, date: string): string {
+export function formatPerioRange(perio?: string, date?: Date | string): string {
   if (!perio) return "";
   const sorted = perio
     .split(',')
