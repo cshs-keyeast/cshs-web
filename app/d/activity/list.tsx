@@ -14,39 +14,8 @@ import errorMessage from "@libs/client/error-message";
 import { useAppDispatch, useAppSelector } from "@libs/client/redux/hooks";
 import Button, { SubButton } from "@components/button";
 import Loading from "@components/loading";
-import displayPerio, { isWeekend } from "@libs/client/perio-display";
+import displayPerio, { isWeekend, formatPerioRange } from "@libs/client/perio-display";
 import PasscardModal from "@components/info/passcard";
-
-function formatPerioRange(perio: string, date: string) {
-  if (!perio) return "";
-  const sorted = perio
-    .split(',')
-    .map((p: string) => parseInt(p.trim(), 10))
-    .filter((n: number) => !isNaN(n))
-    .sort((a: number, b: number) => a - b);
-  if (sorted.length === 0) return "";
-  const groups: number[][] = [];
-  let currentGroup: number[] = [sorted[0]];
-  for (let i = 1; i < sorted.length; i++) {
-    if (sorted[i] === sorted[i - 1] + 1) {
-      currentGroup.push(sorted[i]);
-    } else {
-      groups.push(currentGroup);
-      currentGroup = [sorted[i]];
-    }
-  }
-  groups.push(currentGroup);
-  return groups
-    .map((group) => {
-      if (group.length === 1) {
-        return displayPerio(group[0], undefined, date);
-      }
-      const start = displayPerio(group[0], undefined, date);
-      const end = displayPerio(group[group.length - 1], undefined, date);
-      return `${start} ~ ${end}`;
-    })
-    .join(', ');
-}
 
 export default function ActivityList() {
 
