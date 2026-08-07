@@ -17,6 +17,37 @@ import Loading from "@components/loading";
 import displayPerio, { isWeekend } from "@libs/client/perio-display";
 import PasscardModal from "@components/info/passcard";
 
+function formatPerioRange(perio: string, date: string) {
+  if (!perio) return "";
+  const sorted = perio
+    .split(',')
+    .map((p: string) => parseInt(p.trim(), 10))
+    .filter((n: number) => !isNaN(n))
+    .sort((a: number, b: number) => a - b);
+  if (sorted.length === 0) return "";
+  const groups: number[][] = [];
+  let currentGroup: number[] = [sorted[0]];
+  for (let i = 1; i < sorted.length; i++) {
+    if (sorted[i] === sorted[i - 1] + 1) {
+      currentGroup.push(sorted[i]);
+    } else {
+      groups.push(currentGroup);
+      currentGroup = [sorted[i]];
+    }
+  }
+  groups.push(currentGroup);
+  return groups
+    .map((group) => {
+      if (group.length === 1) {
+        return displayPerio(group[0], undefined, date);
+      }
+      const start = displayPerio(group[0], undefined, date);
+      const end = displayPerio(group[group.length - 1], undefined, date);
+      return `${start} ~ ${end}`;
+    })
+    .join(', ');
+}
+
 export default function ActivityList() {
 
   const [search, setSearch] = useState("");
@@ -250,36 +281,7 @@ export default function ActivityList() {
                             )
                           : ""}
                           <br/>
-                          {(() => {
-                            if (!activity.perio) return "";
-                            const sorted = activity.perio
-                              .split(',')
-                              .map((p: string) => parseInt(p.trim(), 10))
-                              .filter((n: number) => !isNaN(n))
-                              .sort((a: number, b: number) => a - b);
-                            if (sorted.length === 0) return "";
-                            const groups: number[][] = [];
-                            let currentGroup: number[] = [sorted[0]];
-                            for (let i = 1; i < sorted.length; i++) {
-                              if (sorted[i] === sorted[i - 1] + 1) {
-                                currentGroup.push(sorted[i]);
-                              } else {
-                                groups.push(currentGroup);
-                                currentGroup = [sorted[i]];
-                              }
-                            }
-                            groups.push(currentGroup);
-                            return groups
-                              .map((group) => {
-                                if (group.length === 1) {
-                                  return displayPerio(group[0], undefined, activity.date);
-                                }
-                                const start = displayPerio(group[0], undefined, activity.date);
-                                const end = displayPerio(group[group.length - 1], undefined, activity.date);
-                                return `${start} ~ ${end}`;
-                              })
-                              .join(', ');
-                          })()}
+                          { formatPerioRange(activity.perio, activity.date) }
                         </td>
                         { userInfo.type === 1 && <td className="px-6 py-2 w-[40px]">
                           <div className="bg-blue-500/20 hover:bg-blue-600/20 text-sm transition-all font-bold justify-center px-3 py-3 flex items-center cursor-pointer rounded-[10px] text-blue-500" onClick={(e) => {
@@ -465,36 +467,7 @@ export default function ActivityList() {
                             )
                           : ""}
                           <br/>
-                          {(() => {
-                            if (!activity.perio) return "";
-                            const sorted = activity.perio
-                              .split(',')
-                              .map((p: string) => parseInt(p.trim(), 10))
-                              .filter((n: number) => !isNaN(n))
-                              .sort((a: number, b: number) => a - b);
-                            if (sorted.length === 0) return "";
-                            const groups: number[][] = [];
-                            let currentGroup: number[] = [sorted[0]];
-                            for (let i = 1; i < sorted.length; i++) {
-                              if (sorted[i] === sorted[i - 1] + 1) {
-                                currentGroup.push(sorted[i]);
-                              } else {
-                                groups.push(currentGroup);
-                                currentGroup = [sorted[i]];
-                              }
-                            }
-                            groups.push(currentGroup);
-                            return groups
-                              .map((group) => {
-                                if (group.length === 1) {
-                                  return displayPerio(group[0], undefined, activity.date);
-                                }
-                                const start = displayPerio(group[0], undefined, activity.date);
-                                const end = displayPerio(group[group.length - 1], undefined, activity.date);
-                                return `${start} ~ ${end}`;
-                              })
-                              .join(', ');
-                          })()}
+                          { formatPerioRange(activity.perio, activity.date) }
                         </td>
                       </tr>
                     )
