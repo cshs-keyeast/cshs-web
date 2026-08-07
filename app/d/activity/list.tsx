@@ -14,7 +14,7 @@ import errorMessage from "@libs/client/error-message";
 import { useAppDispatch, useAppSelector } from "@libs/client/redux/hooks";
 import Button, { SubButton } from "@components/button";
 import Loading from "@components/loading";
-import displayPerio, { isWeekend } from "@libs/client/perio-display";
+import displayPerio, { isWeekend, formatPerioRange } from "@libs/client/perio-display";
 import PasscardModal from "@components/info/passcard";
 
 export default function ActivityList() {
@@ -250,9 +250,7 @@ export default function ActivityList() {
                             )
                           : ""}
                           <br/>
-                          {displayPerio(+activity.perio.split(',').sort()[0], undefined, activity.date)}
-                          {' ~ '}
-                          {displayPerio(+activity.perio.split(',').sort(function (a:number, b:number) {return b - a;})[0], undefined, activity.date)}
+                          { formatPerioRange(activity.perio, activity.date) }
                         </td>
                         { userInfo.type === 1 && <td className="px-6 py-2 w-[40px]">
                           <div className="bg-blue-500/20 hover:bg-blue-600/20 text-sm transition-all font-bold justify-center px-3 py-3 flex items-center cursor-pointer rounded-[10px] text-blue-500" onClick={(e) => {
@@ -438,9 +436,7 @@ export default function ActivityList() {
                             )
                           : ""}
                           <br/>
-                          {displayPerio(+activity.perio.split(',').sort()[0], undefined, activity.date)}
-                          {' ~ '}
-                          {displayPerio(+activity.perio.split(',').sort(function (a:number, b:number) {return b - a;})[0], undefined, activity.date)}
+                          { formatPerioRange(activity.perio, activity.date) }
                         </td>
                       </tr>
                     )

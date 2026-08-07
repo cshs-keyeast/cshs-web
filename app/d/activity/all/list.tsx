@@ -10,7 +10,7 @@ import Modal from "@components/modal";
 import { AnimatePresence } from "framer-motion";
 import Link from "next/link";
 import { useAppSelector } from "@libs/client/redux/hooks";
-import displayPerio from "@libs/client/perio-display";
+import { formatPerioRange } from "@libs/client/perio-display";
 
 export default function ActivityList() {
 
@@ -151,9 +151,7 @@ export default function ActivityList() {
                             "$1년 $2월 $3일"
                             )
                           : ""}<br/>
-                          {displayPerio(+activity.perio.split(',').sort()[0], undefined, activity.date)}
-                          {' ~ '}
-                          {displayPerio(+activity.perio.split(',').sort(function (a:number, b:number) {return b - a;})[0], undefined, activity.date)}
+                          { formatPerioRange(activity.perio, activity.date) }
                         </td>
                       </tr>
                     )
@@ -283,9 +281,7 @@ export default function ActivityList() {
                             )
                           : ""}
                           <br/>
-                          {displayPerio(+activity.perio.split(',').sort()[0], undefined, activity.date)}
-                          {' ~ '}
-                          {displayPerio(+activity.perio.split(',').sort(function (a:number, b:number) {return b - a;})[0], undefined, activity.date)}
+                          { formatPerioRange(activity.perio, activity.date) }
                         </td>
                       </tr>
                     )
