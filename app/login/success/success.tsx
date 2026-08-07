@@ -10,12 +10,6 @@ import { Suspense, useEffect, useState } from 'react'
 import { useDispatch } from 'react-redux';
 import Loading from '@components/loading';
 
-function getSafeCallbackUrl(url: string | null): string {
-  if (!url || url === 'undefined' || url === 'null') return '/d/home';
-  if (!url.startsWith('/') || url.startsWith('//')) return '/d/home';
-  return url;
-}
-
 function SuccessContainer() {
   return (
     <Suspense>
@@ -28,11 +22,12 @@ const Success: NextPage = () => {
   const { data } = useSWR('/api/user');
 
   const router = useSearchParams();
-  const rawCallbackUrl = router.get('callbackUrl');
+  const callbackUrl = router.get('callbackUrl');
 
   useEffect(() => {
     if(data?.success === true) {
-      location.href = getSafeCallbackUrl(rawCallbackUrl);
+      if(callbackUrl && callbackUrl !== "undefined" && callbackUrl !== "null") location.href = callbackUrl;
+      else location.href = "/d/home";
     } else {
       if(data?.message === '사용자 정보를 찾을 수 없어요' || data?.message === 'Unauthorized') {
         location.href = "/login/error";
