@@ -22,7 +22,7 @@ export default function PetitionDetail({ params }: { params: { id: string } }) {
   const { data: petition } = useSWR(`/api/petitions/${params.id}`);
   const { data: supportData } = useSWR(`/api/petitions/${params.id}/support`);
 
-  const targetCount = 150; // 목표 동의 수
+  const targetCount = 126; // 목표 동의 수
   const percent = Math.round(((petition?.supportCount || 0) / targetCount) * 100);
   const closed = new Date(petition?.expiresAt) < new Date() || percent >= 100;
 
