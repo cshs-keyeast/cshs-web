@@ -83,7 +83,7 @@ export default function PetitionTermsPage() {
           <div className="mb-6">
             <h3 className="text-lg font-medium mb-3 text-gray-700">제6조(답변의 원칙 및 기준)</h3>
             <ol className="list-decimal list-inside space-y-2 text-gray-600">
-              <li>청원 게시 후 1달 이내 150명 이상의 동의를 얻은 청원에 대하여 학생회는 회의를 거쳐 공식적인 답변을 해야 함을 원칙으로 한다.</li>
+              <li>청원 게시 후 1달 이내 126명 이상의 동의를 얻은 청원에 대하여 학생회는 회의를 거쳐 공식적인 답변을 해야 함을 원칙으로 한다.</li>
               <li>학생회는 답변 요건을 충족한 청원에 대해 관련 부서 및 선생님과 협의해 실현 가능성, 추진 계획 등을 검토해야 한다.</li>
               <li>답변은 답변 요건 충족일 이후 바로 다음 학생회 회의에서 이루어짐을 원칙으로 하며, 청원에 대한 검토 과정, 최종 입장, 향후 계획 등을 포함해야 한다.</li>
             </ol>
