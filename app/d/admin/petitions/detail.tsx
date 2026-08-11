@@ -5,6 +5,10 @@ import useSWR from "swr";
 import Link from "next/link";
 import Loading from "@components/loading";
 import { Textarea } from "@components/input";
+import Modal from "@components/modal";
+import { AnimatePresence } from "framer-motion";
+import { useAppDispatch } from "@libs/client/redux/hooks";
+import { setNotification } from "@libs/client/redux/notification";
 
 export default function AdminPetitionDetail({ id }: { id: string }) {
   const { data, isLoading, mutate } = useSWR(`/api/petitions/admin/${id}`);
@@ -12,12 +16,13 @@ export default function AdminPetitionDetail({ id }: { id: string }) {
   const [response, setResponse] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showPublicToggle, setShowPublicToggle] = useState(false);
+  const [confirmType, setConfirmType] = useState<'approve' | 'reject' | null>(null);
+
+  const dispatch = useAppDispatch();
 
   const petition = data?.petition;
 
   const handleApprove = async () => {
-    if (!confirm('이 청원을 공개하시겠습니까?')) return;
-
     try {
       setIsSubmitting(true);
       const res = await fetch(`/api/petitions/admin/${id}`, {
@@ -27,19 +32,18 @@ export default function AdminPetitionDetail({ id }: { id: string }) {
       });
 
       if (res.ok) {
-        alert('청원이 공개되었습니다.');
+        dispatch(setNotification({ type: 'success', text: '청원이 공개되었습니다.' }));
         mutate();
       } else {
-        alert('오류가 발생했습니다.');
+        dispatch(setNotification({ type: 'error', text: '오류가 발생했습니다.' }));
       }
     } finally {
       setIsSubmitting(false);
+      setConfirmType(null);
     }
   };
 
   const handleReject = async () => {
-    if (!confirm('이 청원을 반려하시겠습니까?')) return;
-
     try {
       setIsSubmitting(true);
       const res = await fetch(`/api/petitions/admin/${id}`, {
@@ -49,13 +53,14 @@ export default function AdminPetitionDetail({ id }: { id: string }) {
       });
 
       if (res.ok) {
-        alert('청원이 반려되었습니다.');
+        dispatch(setNotification({ type: 'success', text: '청원이 반려되었습니다.' }));
         mutate();
       } else {
-        alert('오류가 발생했습니다.');
+        dispatch(setNotification({ type: 'error', text: '오류가 발생했습니다.' }));
       }
     } finally {
       setIsSubmitting(false);
+      setConfirmType(null);
     }
   };
 
@@ -65,15 +70,15 @@ export default function AdminPetitionDetail({ id }: { id: string }) {
       const res = await fetch(`/api/petitions/admin/${id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ isPublic })
+        body: JSON.stringify({ status: isPublic ? 'open' : 'closed', isPublic })
       });
 
       if (res.ok) {
-        alert(isPublic ? '청원이 공개되었습니다.' : '청원이 비공개되었습니다.');
+        dispatch(setNotification({ type: 'success', text: isPublic ? '청원이 공개되었습니다.' : '청원이 비공개되었습니다.' }));
         setShowPublicToggle(false);
         mutate();
       } else {
-        alert('오류가 발생했습니다.');
+        dispatch(setNotification({ type: 'error', text: '오류가 발생했습니다.' }));
       }
     } finally {
       setIsSubmitting(false);
@@ -82,7 +87,7 @@ export default function AdminPetitionDetail({ id }: { id: string }) {
 
   const handleSubmitResponse = async () => {
     if (!response.trim()) {
-      alert('답변을 입력해주세요.');
+      dispatch(setNotification({ type: 'warning', text: '답변을 입력해주세요.' }));
       return;
     }
 
@@ -91,18 +96,18 @@ export default function AdminPetitionDetail({ id }: { id: string }) {
       const res = await fetch(`/api/petitions/admin/${id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ 
+        body: JSON.stringify({
           response: response.trim()
         })
       });
 
       if (res.ok) {
-        alert('답변이 등록되었습니다.');
+        dispatch(setNotification({ type: 'success', text: '답변이 등록되었습니다.' }));
         setResponse('');
         setIsEditing(false);
         mutate();
       } else {
-        alert('오류가 발생했습니다.');
+        dispatch(setNotification({ type: 'error', text: '오류가 발생했습니다.' }));
       }
     } finally {
       setIsSubmitting(false);
@@ -143,6 +148,36 @@ export default function AdminPetitionDetail({ id }: { id: string }) {
 
   return (
     <div className="w-full">
+      <AnimatePresence initial={false} mode="wait">
+        { confirmType && <Modal handleClose={() => !isSubmitting && setConfirmType(null)}>
+          <div className="md:w-[320px] h-auto">
+            <div className="font-bold text-xl text-zinc-800">
+              {confirmType === 'approve' ? '이 청원을 공개하시겠습니까?' : '이 청원을 반려하시겠습니까?'}
+            </div>
+            <div className="flex items-center space-x-2 mt-5">
+              <div
+                onClick={() => !isSubmitting && setConfirmType(null)}
+                className="bg-gray-100 hover:bg-gray-200 text-base transition-all font-medium text-zinc-800 justify-center w-full py-3 flex items-center cursor-pointer rounded-xl"
+              >
+                취소
+              </div>
+              { !isSubmitting ? (
+                <div
+                  onClick={() => confirmType === 'approve' ? handleApprove() : handleReject()}
+                  className={`${confirmType === 'approve' ? 'bg-green-500 hover:bg-green-600' : 'bg-red-500 hover:bg-red-600'} text-base transition-all font-medium text-white justify-center w-full py-3 flex items-center cursor-pointer rounded-xl`}
+                >
+                  {confirmType === 'approve' ? '공개하기' : '반려하기'}
+                </div>
+              ) : (
+                <div className={`${confirmType === 'approve' ? 'bg-green-500/50' : 'bg-red-500/50'} text-base transition-all font-medium text-white justify-center w-full py-3 flex items-center rounded-xl h-[48px]`}>
+                  <Loading size={20} />
+                </div>
+              )}
+            </div>
+          </div>
+        </Modal> }
+      </AnimatePresence>
+
       {/* 헤더 */}
       <div className="flex justify-between items-start mb-8">
         <div className="flex-1">
@@ -179,14 +214,14 @@ export default function AdminPetitionDetail({ id }: { id: string }) {
         {isPending && (
           <>
             <button
-              onClick={handleApprove}
+              onClick={() => setConfirmType('approve')}
               disabled={isSubmitting}
               className="px-6 py-2 bg-green-500 text-white rounded-lg font-semibold hover:bg-green-600 transition-colors disabled:opacity-50"
             >
               {isSubmitting ? '처리중...' : '공개하기'}
             </button>
             <button
-              onClick={handleReject}
+              onClick={() => setConfirmType('reject')}
               disabled={isSubmitting}
               className="px-6 py-2 bg-red-500 text-white rounded-lg font-semibold hover:bg-red-600 transition-colors disabled:opacity-50"
             >
