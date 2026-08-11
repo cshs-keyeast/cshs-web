@@ -27,7 +27,7 @@ export default function ActivityList() {
 
   const petitions = data?.petitions ?? [];
 
-  const targetCount = 150;
+  const targetCount = 126;
   function percent(p: Petition) {
     if (!p) return 0;
     const v = Math.round((p.supportCount / targetCount) * 100);
