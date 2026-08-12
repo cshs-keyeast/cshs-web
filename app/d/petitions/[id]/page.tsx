@@ -22,7 +22,7 @@ export default function PetitionDetail({ params }: { params: { id: string } }) {
   const { data: petition } = useSWR(`/api/petitions/${params.id}`);
   const { data: supportData } = useSWR(`/api/petitions/${params.id}/support`);
 
-  const targetCount = 150; // 목표 동의 수
+  const targetCount = 126; // 목표 동의 수
   const percent = Math.round(((petition?.supportCount || 0) / targetCount) * 100);
   const closed = new Date(petition?.expiresAt) < new Date() || percent >= 100;
 
@@ -98,7 +98,7 @@ export default function PetitionDetail({ params }: { params: { id: string } }) {
                 <div>마감일: {displayDate(petition.expiresAt, 'date')}</div>
               </div>
             </div>
-            {(new Date(petition?.expiresAt) < new Date() && percent >= 100) && <div className="w-full px-4 py-2 bg-teal-100 rounded-lg mb-3 text-teal-500 font-semibold">청원 동의가 100%에 도달하여 담당자/담당부서의 답변을 기다리고 있습니다.</div>}
+            {(new Date(petition?.expiresAt) < new Date() && percent >= 100 && !petition?.response) && <div className="w-full px-4 py-2 bg-teal-100 rounded-lg mb-3 text-teal-500 font-semibold">청원 동의가 100%에 도달하여 담당자/담당부서의 답변을 기다리고 있습니다.</div>}
             {petition?.response && <div className="w-full px-4 py-3 bg-teal-50 rounded-lg mb-3 text-teal-500 font-semibold break-words">
               <div className="text-base font-bold">청원에 대한 답변</div>
               <div className="font-medium">{petition.response}</div>
