@@ -110,12 +110,14 @@ export default function SideBar() {
       { (meal && timetableData) && <div className="space-y-5">
         { user.user.grade === 1 ? <OpacityAnimation>
           <div className="bg-gray-50 md:flex hidden cursor-pointer hover:bg-gray-100/70 transition-colors rounded-2xl xl:w-[350px] w-full md:w-[320px] h-[120px] px-7 py-5 items-center space-x-5">
+            {/*
             <div className="text-4xl tossface">🎉</div>
             <div>
               <div className="font-bold text-lightgray-300">16기 여러분의 입학을<br/>환영합니다</div>
               <div className="text-sm text-lightgray-200 mt-1 xl:block hidden">16기 여러분의 입학을 환영합니다.</div>
               <div className="text-sm text-lightgray-200 mt-1 xl:hidden block">16기 여러분의 입학을 환영합니다.</div>
             </div>
+            */}
           </div>
         </OpacityAnimation> : <OpacityAnimation>
           <Link href='/d/petitions'>
