@@ -2,7 +2,6 @@ import Menu from "@components/menu";
 import Image from "next/image";
 import Link from "next/link";
 import Todo from "./todo-this-week";
-import Announcement from "./announcements";
 import MainText from "./text";
 import SideBar from "./sidebar";
 import type { Metadata } from 'next'
@@ -57,9 +56,6 @@ export default function Home() {
             </div>
             <div className="md:hidden block">
               <SideBar/>
-            </div>
-            <div className="space-y-3 mt-5 md:mt-16">
-              {/* <Announcement/> */}
             </div>
           </div>
           <div className="w-[350px] space-y-3 md:block hidden">

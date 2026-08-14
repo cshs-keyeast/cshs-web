@@ -237,10 +237,6 @@ export default function SideBar() {
           <PasscardModal fn={() => {
             setPasscardModal(false);
 
-            // const expires = new Date();
-            // expires.setDate(expires.getDate() + 30);
-            // document.cookie = `classroom-info-modal=true; expires=${expires.toUTCString()}; path=/`;
-
             document.cookie = `passcard-info-modal=true; path=/`;
           }} />
         </Modal> }

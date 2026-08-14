@@ -59,14 +59,11 @@ model User {
 
   affiliationSchool School? @relation("SchoolMember", fields: [affiliationSchoolId], references: [id])
   affiliationSchoolId Int?
-  google Google? @relation("GoogleAccount")
-  googleId Int?
 
   receivedTodo Todo[] @relation("ReceivedTodoUser")
   ownedGroup Group[] @relation("OwnedGroup")
   sendedTodo Todo[] @relation("SendedTodoUser")
   group GroupRelation[] @relation("GroupUser")
-  classroomCourse ClassroomCourseRelation[] @relation("ClassroomCourse")
   joinedActivity ActivityRelation[] @relation("ActivityUser")
   writtenActivity Activity[] @relation("WriterActivity")
   asignedActivity Activity[] @relation("TeacherActivity")
@@ -124,59 +121,6 @@ model ActivityRelation {
   userId Int
   activity Activity @relation("ActivityRelation", fields: [activityId], references: [id], onDelete: Cascade)
   activityId Int
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-}
-
-model Google {
-  id Int @id @default(autoincrement())
-  user User @relation("GoogleAccount", fields: [userId], references: [id])
-  userId Int @unique
-  accessToken String @db.Text
-  refreshToken String @db.Text
-  expire DateTime
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-}
-
-model ClassroomCourse {
-  id Int @id @default(autoincrement())
-  courseId String @unique
-  name String
-  description String
-  relation ClassroomCourseRelation[] @relation("ClassroomCourse")
-  relationId Int?
-  annoucement ClassroomAnnoucement[] @relation("ClassroomAnnoucement")
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-}
-
-model ClassroomAnnoucement {
-  id Int @id @default(autoincrement())
-  announcementId String @unique
-  writer String
-  profile String?
-  title String?
-  content String @db.Text
-  course ClassroomCourse @relation("ClassroomAnnoucement", fields: [courseId], references: [id])
-  courseId Int
-  type Int? // 0: 공지, 1: 과제
-  analysed Boolean
-  dueDate DateTime?
-  postCreationTime DateTime
-  postUpdateTime DateTime
-  materials Boolean?
-  alternateLink String?
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-}
-
-model ClassroomCourseRelation {
-  id Int @id @default(autoincrement())
-  course ClassroomCourse @relation("ClassroomCourse", fields: [courseId], references: [id])
-  courseId Int
-  user User @relation("ClassroomCourse", fields: [userId], references: [id], onDelete: Cascade)
-  userId Int
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
@@ -257,13 +201,6 @@ model Todo {
   mainTodo Todo? @relation("MainTodo", fields: [mainTodoId], references: [id], onDelete: Cascade)
   mainTodoId Int?
   relationTodo Todo[] @relation("MainTodo")
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-}
-
-model Feedback {
-  id Int @id @default(autoincrement())
-  content String @db.Text
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
