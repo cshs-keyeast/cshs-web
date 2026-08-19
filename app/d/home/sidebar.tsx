@@ -14,6 +14,7 @@ import { setNotification } from "@libs/client/redux/notification";
 import displayDate from "@libs/client/time-display";
 import PasscardModal from "@components/info/passcard";
 import formatedDate from "@libs/client/formated-date";
+import getWelcomeBannerInfo from "@libs/client/welcome-banner";
 
 export default function SideBar() {
   const now = new Date().toLocaleDateString("ko-KR", { timeZone: "Asia/Seoul" }).replaceAll('. ', '/').replaceAll('.', ''); // Safari 호환을 위해 '.'를 '-'로 변경
@@ -34,6 +35,8 @@ export default function SideBar() {
   }, [timetable]);
 
   const [passcardModal, setPasscardModal] = useState(false);
+
+  const { show: showWelcomeBanner, generation } = getWelcomeBannerInfo();
 
   const getMealData = async (date:string | null) => {
     const school = user.user.affiliationSchool;
@@ -108,16 +111,14 @@ export default function SideBar() {
   return (
     <>
       { (meal && timetableData) && <div className="space-y-5">
-        { user.user.grade === 1 ? <OpacityAnimation>
+        { (user.user.grade === 1 && showWelcomeBanner) ? <OpacityAnimation>
           <div className="bg-gray-50 md:flex hidden cursor-pointer hover:bg-gray-100/70 transition-colors rounded-2xl xl:w-[350px] w-full md:w-[320px] h-[120px] px-7 py-5 items-center space-x-5">
-            {/*
             <div className="text-4xl tossface">🎉</div>
             <div>
-              <div className="font-bold text-lightgray-300">16기 여러분의 입학을<br/>환영합니다</div>
-              <div className="text-sm text-lightgray-200 mt-1 xl:block hidden">16기 여러분의 입학을 환영합니다.</div>
-              <div className="text-sm text-lightgray-200 mt-1 xl:hidden block">16기 여러분의 입학을 환영합니다.</div>
+              <div className="font-bold text-lightgray-300">{generation}기 여러분의 입학을<br/>환영합니다</div>
+              <div className="text-sm text-lightgray-200 mt-1 xl:block hidden">{generation}기 여러분의 입학을 환영합니다.</div>
+              <div className="text-sm text-lightgray-200 mt-1 xl:hidden block">{generation}기 여러분의 입학을 환영합니다.</div>
             </div>
-            */}
           </div>
         </OpacityAnimation> : <OpacityAnimation>
           <Link href='/d/petitions'>
