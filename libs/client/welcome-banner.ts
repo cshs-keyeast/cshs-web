@@ -3,9 +3,15 @@ const WELCOME_BANNER_START_MONTH = 3; // 3월 1일부터 노출 시작
 const WELCOME_BANNER_DURATION_DAYS = 31; // 노출 기간(일)
 
 export default function getWelcomeBannerInfo() {
-  const kstDateStr = new Date().toLocaleDateString("en-CA", { timeZone: "Asia/Seoul" });
-  const [year, month, day] = kstDateStr.split('-').map(Number);
-
+  const parts = new Intl.DateTimeFormat("en-CA", {
+    timeZone: "Asia/Seoul",
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+  }).formatToParts(new Date());
+  const year = Number(parts.find((p) => p.type === "year")?.value);
+  const month = Number(parts.find((p) => p.type === "month")?.value);
+  const day = Number(parts.find((p) => p.type === "day")?.value);
   const start = new Date(year, WELCOME_BANNER_START_MONTH - 1, 1);
   const end = new Date(start);
   end.setDate(end.getDate() + WELCOME_BANNER_DURATION_DAYS);
