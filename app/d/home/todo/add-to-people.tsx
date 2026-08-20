@@ -10,7 +10,6 @@ import { AnimatePresence } from "framer-motion";
 import { useState } from "react";
 import { useDispatch } from "react-redux";
 import { mutate } from "swr";
-import ClassroomModal from "./classroom-info";
 import SelectMember from "@components/member";
 import Switch from "@components/switch";
 
@@ -65,30 +64,12 @@ export default function AddToMeButton() {
     });
   }
 
-  const [classroomModal, setClassroomModal] = useState(false);
-
   const [memberModal, setMemberModal] = useState(false);
   const [selected, setSelected] = useState<{ id: number; class: number; grade: number; number: number; profile: string; name: string; }[]>([]);
   const [toMe, setToMe] = useState(false);
 
   return (
     <div>
-      <AnimatePresence initial={false} mode="wait">
-        { classroomModal && <Modal handleClose={() => setClassroomModal(false)}>
-          <ClassroomModal fn={() => {
-            setClassroomModal(false);
-            setTimeout(() => {
-              setModal(true);
-            }, 150);
-
-            // const expires = new Date();
-            // expires.setDate(expires.getDate() + 30);
-            // document.cookie = `classroom-info-modal=true; expires=${expires.toUTCString()}; path=/`;
-
-            // document.cookie = `classroom-info-modal=true; path=/`;
-          }} />
-        </Modal> }
-      </AnimatePresence>
       <AnimatePresence initial={false} mode="wait">
         { memberModal && <Modal handleClose={() => {
           setMemberModal(false);
@@ -168,11 +149,6 @@ export default function AddToMeButton() {
       </AnimatePresence>
       <div className="md:block hidden">
         <SubButton color="blue" fn={() => {
-          // if(document.cookie.indexOf('classroom-info-modal=') === -1) {
-          //   setClassroomModal(true);
-          // } else {
-          //   setModal(true);
-          // }
           setDateModal(false);
           setDate(dayjs(new Date()).toDate());
           setTitle('');
@@ -189,11 +165,6 @@ export default function AddToMeButton() {
       </div>
       <div className="md:hidden block fixed bottom-20 right-4 z-30">
         <CircleButton color="blue" fn={() => {
-          // if(document.cookie.indexOf('classroom-info-modal=') === -1) {
-          //   setClassroomModal(true);
-          // } else {
-          //   setModal(true);
-          // }
           setDateModal(false);
           setDate(dayjs(new Date()).toDate());
           setTitle('');
