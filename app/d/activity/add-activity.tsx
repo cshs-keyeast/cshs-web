@@ -75,6 +75,7 @@ export default function AddActivityButton() {
         dispatch(setNotification({ type: "success", text: '활동 승인을 요청했어요' }));
         mutate('/api/activity/me?');
         setModal(false);
+        resetForm();
         setCreatedData(response.overlappingActivities)
         setTimeout(() => {
           if(response.overlappingActivities.some((activity: any) => activity.activity.length > 0)) {
@@ -125,6 +126,16 @@ export default function AddActivityButton() {
   const [createdData, setCreatedData] = useState<any>(null);
 
   const userInfo = useAppSelector(state => state.userInfo);
+
+  function resetForm() {
+    setContent('');
+    setSelected([]);
+    setSelectedTeacher([]);
+    setSelectedDate(new Date());
+    setDateModal(false);
+    setPlace(undefined);
+    setTime([]);
+  }
 
   return (
     <div>
@@ -254,7 +265,10 @@ export default function AddActivityButton() {
                 </div>
               </Modal> }
             </AnimatePresence>
-            <div className="flex justify-end">
+            <div className="flex justify-between items-center">
+              <div onClick={resetForm} className="text-sm text-lightgray-200 hover:text-zinc-800 transition-colors cursor-pointer">
+                입력 내용 초기화
+              </div>
               <div onClick={() => setModal(false)} className="p-1 rounded-full bg-gray-100 hover:bg-gray-200 transition-all cursor-pointer">
                 <svg className="w-6 h-6 p-1 rounded-full stroke-gray-400" fill="none" strokeWidth={2} stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
                   <path strokeLinecap="round" strokeLinejoin="round" d="M6 18 18 6M6 6l12 12" />
@@ -426,14 +440,7 @@ export default function AddActivityButton() {
         </OpacityAnimation> }
         { (userInfo.name !== '' && userInfo.type === 0) && <div className="md:block hidden">
             <SubButton color="blue" fn={() => {
-              setContent('');
-              setSelected([]);
-              setSelectedTeacher([]);
-              setSelectedDate(new Date());
-              setDateModal(false);
               setModal(true);
-              setPlace(undefined);
-              setTime([]);
             }}>
               <div className="flex items-center ml-4 mr-5">
                 <svg className="w-5 h-5 mr-1" fill="none" strokeWidth={2} stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
@@ -447,14 +454,7 @@ export default function AddActivityButton() {
       { userInfo.type === 0 && <OpacityAnimation>
         <div className="md:hidden block fixed bottom-20 right-4 z-30">
           <CircleButton color="blue" fn={() => {
-            setContent('');
-            setSelected([]);
-            setSelectedTeacher([]);
-            setSelectedDate(new Date());
-            setDateModal(false);
             setModal(true);
-            setPlace(undefined);
-            setTime([]);
           }}>
             <div className="flex items-center mx-3">
               <svg className="w-6 h-6 m-[5px]" fill="none" strokeWidth={2} stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
