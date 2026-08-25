@@ -3,9 +3,6 @@ import client from '@/libs/server/client';
 import getServerSessionCM from '@/libs/server/session';
 import papa from 'papaparse';
 
-const bcrypt = require('bcryptjs');
-const saltRounds = 10;
-
 async function isAdmin(session: any) {
   if (!session?.user?.email) return false;
   const user = await client.user.findUnique({ where: { email: session.user.email } });
@@ -31,44 +28,41 @@ export async function POST(req: Request) {
     dynamicTyping: true
   });
   if (type === 'student') {
-    result.data.forEach(async function (data: any) {
-      const user = await client.user.create({
-        data: {
-          id: data.id,
-          name: data.name + '',
-          userId: data.userId + '',
-          type: 0,
-          password: null,
-          grade: data.grade,
-          class: data.class,
-          number: data.number,
-          provider: 'local',
-          email: '' + data.userId + '@school.local',
-          affiliationSchoolId: 1
-        }
-      });
-    });
+    await client.$transaction(
+      result.data.map((data: any) =>
+        client.user.create({
+          data: {
+            name: data.name + '',
+            userId: data.userId + '',
+            type: 0,
+            password: null,
+            grade: data.grade,
+            class: data.class,
+            number: data.number,
+            provider: 'local',
+            email: '' + data.userId + '@school.local',
+            affiliationSchoolId: 1
+          }
+        })
+      )
+    );
   }
   if (type === 'teacher') {
-    result.data.forEach(async function (data: any) {
-      await bcrypt.genSalt(saltRounds, async function(err: any, salt: any) {
-        await bcrypt.hash(data.userId, salt, async function(err: any, hash: any) {
-          const user = await client.user.create({
-            data: {
-              id: data.id,
-              name: data.name + '',
-              userId: data.userId + '',
-              type: 1,
-              password: null,
-              provider: 'local',
-              email: '' + data.userId + '@school.local',
-              affiliationSchoolId: 1
-            }
-          });
-          
-        });
-      })
-    });
+    await client.$transaction(
+      result.data.map((data: any) =>
+        client.user.create({
+          data: {
+            name: data.name + '',
+            userId: data.userId + '',
+            type: 1,
+            password: null,
+            provider: 'local',
+            email: '' + data.userId + '@school.local',
+            affiliationSchoolId: 1
+          }
+        })
+      )
+    );
   }
   return NextResponse.json({ success: true } );
 }
