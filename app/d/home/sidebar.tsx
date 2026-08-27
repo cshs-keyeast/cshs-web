@@ -147,7 +147,7 @@ export default function SideBar() {
                 )
               }) }
             </div>
-            <div className="text-xs text-lightgray-200 mt-5">일부 수업 교체는 표시되지 않을 수 있습니다.<br/>8교시 시간표는 1학년을 대상으로 베타 테스트 중입니다.<br/>오류 발생 시 관리자에게 문의해주세요.</div>
+            <div className="text-xs text-lightgray-200 mt-5">일부 수업 교체는 표시되지 않을 수 있습니다.<br/>8교시 시간표는 1학년 3반을 대상으로 베타 테스트 중입니다.<br/>오류 발생 시 관리자에게 문의해주세요.</div>
           </div>
         </OpacityAnimation> }
         { (timetableData?.message === '시간표 정보를 찾을 수 없어요') && <OpacityAnimation>
