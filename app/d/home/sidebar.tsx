@@ -143,11 +143,11 @@ export default function SideBar() {
             <div className="space-y-1">
               { timetableData?.timetable.map((item:any, index:number) => {
                 return (
-                  <div key={index} className="text-lightgray-200 flex items-center"><div className="text-sm px-1 bg-blue-500/10 w-[50px] text-center rounded-full text-blue-500">{item.perio}교시</div><div className="text-base text-lightgray-200 font-bold break-keep ml-3">{item.subject}</div></div>
+                  <div key={index} className="text-lightgray-200 flex items-center"><div className="text-sm px-1 bg-blue-500/10 w-[50px] text-center rounded-full text-blue-500">{item.perio === 8 ? '8교시' : `${item.perio}교시`}</div><div className="text-base text-lightgray-200 font-bold break-keep ml-3">{item.subject}</div></div>
                 )
               }) }
             </div>
-            <div className="text-xs text-lightgray-200 mt-5">일부 수업 교체는 표시되지 않을 수 있습니다.</div>
+            <div className="text-xs text-lightgray-200 mt-5">일부 수업 교체는 표시되지 않을 수 있습니다.<br/>8교시 시간표는 1학년을 대상으로 베타 테스트 중입니다.<br/>오류 발생 시 관리자에게 문의해주세요.</div>
           </div>
         </OpacityAnimation> }
         { (timetableData?.message === '시간표 정보를 찾을 수 없어요') && <OpacityAnimation>
@@ -186,7 +186,7 @@ export default function SideBar() {
                 {meal.meal.dinner}
               </div>
             </div> }
-            { (!meal.meal.breakfast && !meal.meal.lunch && !meal.meal.dinenr) && <div className="text-lightgray-200 my-10 w-full flex items-center justify-center flex-col">
+            { (!meal.meal.breakfast && !meal.meal.lunch && !meal.meal.dinner) && <div className="text-lightgray-200 my-10 w-full flex items-center justify-center flex-col">
               <div className="w-10 h-10">
                 <svg fill="none" strokeWidth={1.7} stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
                   <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 6.75h12M8.25 12h12m-12 5.25h12M3.75 6.75h.007v.008H3.75V6.75Zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0ZM3.75 12h.007v.008H3.75V12Zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm-.375 5.25h.007v.008H3.75v-.008Zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z" />

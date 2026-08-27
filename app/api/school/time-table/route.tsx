@@ -54,17 +54,27 @@ async function GetHandler(req: Request) {
     formatDate = year+""+(("00"+month.toString()).slice(-2))+""+(("00"+day.toString()).slice(-2));
   }
 
-  const existingTimetable = await client.timetable.findMany({
-    where: {
-      affiliationSchoolId: school.id,
-      date: formatDate,
-      grade: user.grade ?? undefined,
-      class: user.class ?? undefined
-    },
-    orderBy: {
-      perio: 'asc'
-    }
-  });
+  const [existingTimetable, afterschool] = await Promise.all([
+    client.timetable.findMany({
+      where: {
+        affiliationSchoolId: school.id,
+        date: formatDate,
+        grade: user.grade ?? undefined,
+        class: user.class ?? undefined
+      },
+      orderBy: {
+        perio: 'asc'
+      }
+    }),
+    client.afterschool.findFirst({
+      where: {
+        affiliationSchoolId: school.id,
+        date: formatDate,
+        grade: user.grade ?? undefined,
+        class: user.class ?? undefined
+      }
+    })
+  ]);
 
   if(existingTimetable.length > 0) {
     if(existingTimetable[0].perio === 0) {
@@ -75,7 +85,7 @@ async function GetHandler(req: Request) {
     }
     return NextResponse.json({
       success: true,
-      timetable: existingTimetable
+      timetable: afterschool ? [...existingTimetable, { ...afterschool, perio: 8 }] : existingTimetable
     }, { status: 200 });
   }
 
@@ -130,7 +140,7 @@ async function GetHandler(req: Request) {
 
     return NextResponse.json({
       success: true,
-      timetable: timetableCreate
+      timetable: afterschool ? [...timetableCreate, { ...afterschool, perio: 8 }] : timetableCreate
     }, { status: 200 });
   } else {
     return NextResponse.json({

@@ -31,6 +31,7 @@ model School {
   group Group[] @relation("Group")
   meal Meal[] @relation("SchoolMeal")
   timetable Timetable[] @relation("SchoolTimetable")
+  afterschool Afterschool[] @relation("SchoolAfterschool")
   place Place[] @relation("SchoolPlace")
   petitions Petition[] @relation("SchoolPetition")
   createdAt DateTime @default(now())
@@ -75,6 +76,19 @@ model User {
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+}
+
+model Afterschool {
+  id Int @id @default(autoincrement())
+  affiliationSchool School @relation("SchoolAfterschool", fields: [affiliationSchoolId], references: [id])
+  affiliationSchoolId Int
+  date String // yyyyMMdd, Timetable.date와 동일한 포맷
+  grade Int
+  class Int
+  subject String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  @@unique([affiliationSchoolId, date, grade, class])
 }
 
 model VerificationCode {
