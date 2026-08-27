@@ -28,24 +28,22 @@ export async function POST(req: Request) {
     dynamicTyping: true
   });
   if (type === 'student') {
-    await client.$transaction(
-      result.data.map((data: any) =>
-        client.user.create({
-          data: {
-            name: data.name + '',
-            userId: data.userId + '',
-            type: 0,
-            password: null,
-            grade: data.grade,
-            class: data.class,
-            number: data.number,
-            provider: 'local',
-            email: '' + data.userId + '@school.local',
-            affiliationSchoolId: 1
-          }
-        })
-      )
-    );
+    await client.user.createMany({
+      data: result.data
+        .filter((row: any) => row?.userId != null && row?.name != null)
+        .map((row: any) => ({
+          name: String(row.name),
+          userId: String(row.userId),
+          type: 0,
+          password: null,
+          grade: row.grade,
+          class: row.class,
+          number: row.number,
+          provider: 'local',
+          email: `${String(row.userId)}@school.local`,
+          affiliationSchoolId: 1
+        }))
+    });
   }
   if (type === 'teacher') {
     await client.$transaction(
