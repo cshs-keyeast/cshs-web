@@ -32,7 +32,15 @@ export async function POST(req: Request) {
     dynamicTyping: true
   });
 
+  if (result.errors?.length) {
+    return NextResponse.json({ error: 'CSV 파싱에 실패했습니다.' }, { status: 400 });
+  }
+
   const rows = (result.data as any[]).filter(row => row.date && row.grade && row.class && row.subject);
+  if (rows.length === 0) {
+    return NextResponse.json({ error: '유효한 데이터가 없습니다.' }, { status: 400 });
+  }
+
   const affiliationSchoolId = admin.affiliationSchoolId;
 
   await client.$transaction(
