@@ -19,6 +19,7 @@ function getAdminLabel(admin: number) {
   if ((admin & 1) === 1) labels.push(<div key="seat" className="bg-violet-100 px-2 py-1 text-violet-700 rounded-full">자리배치</div>);
   if ((admin & 2) === 2) labels.push(<div key="user" className="bg-blue-100 px-2 py-1 text-blue-700 rounded-full">사용자관리</div>);
   if ((admin & 4) === 4) labels.push(<div key="petition" className="bg-pink-100 px-2 py-1 text-pink-700 rounded-full">청원관리</div>);
+  if ((admin & 8) === 8) labels.push(<div key="afterschool" className="bg-teal-100 px-2 py-1 text-teal-700 rounded-full">시간표관리</div>);
   return labels;
 }
 
@@ -65,6 +66,7 @@ export default function AdminUserPanel() {
   const [editAdminSeat, setEditAdminSeat] = useState(false);
   const [editAdminUser, setEditAdminUser] = useState(false);
   const [editAdminPetition, setEditAdminPetition] = useState(false);
+  const [editAdminAfterschool, setEditAdminAfterschool] = useState(false);
 
   const [addName, setAddName] = useState('');
   const [addUserId, setAddUserId] = useState('');
@@ -73,6 +75,7 @@ export default function AdminUserPanel() {
   const [addAdminSeat, setAddAdminSeat] = useState(false);
   const [addAdminUser, setAddAdminUser] = useState(false);
   const [addAdminPetition, setAddAdminPetition] = useState(false);
+  const [addAdminAfterschool, setAddAdminAfterschool] = useState(false);
   const [addPassword, setAddPassword] = useState('');
   const [bulkFile, setBulkFile] = useState<File | null>(null);
   const [bulkFileName, setBulkFileName] = useState('');
@@ -141,6 +144,7 @@ const handleGraduation = async () => {
     setEditAdminSeat((Number(user.admin) & 1) === 1);
     setEditAdminUser((Number(user.admin) & 2) === 2);
     setEditAdminPetition((Number(user.admin) & 4) === 4);
+    setEditAdminAfterschool((Number(user.admin) & 8) === 8);
     setEditModal(true);
   };
 
@@ -149,6 +153,7 @@ const handleGraduation = async () => {
     if (editAdminSeat) admin |= 1;
     if (editAdminUser) admin |= 2;
     if (editAdminPetition) admin |= 4;
+    if (editAdminAfterschool) admin |= 8;
     const data = {
       name: editName,
       userId: editUserId,
@@ -170,6 +175,7 @@ const handleGraduation = async () => {
     if (addAdminSeat) admin |= 1;
     if (addAdminUser) admin |= 2;
     if (addAdminPetition) admin |= 4;
+    if (addAdminAfterschool) admin |= 8;
     const data = {
       name: addName,
       userId: addUserId,
@@ -191,6 +197,7 @@ const handleGraduation = async () => {
     setAddAdminSeat(false);
     setAddAdminUser(false);
     setAddAdminPetition(false);
+    setAddAdminAfterschool(false);
     setAddPassword('');
   };
 
@@ -331,6 +338,10 @@ const handleGraduation = async () => {
                     <input type="checkbox" checked={editAdminPetition} onChange={e => setEditAdminPetition(e.target.checked)} />
                     <span>청원관리 권한</span>
                   </label>
+                  <label className="flex items-center space-x-2">
+                    <input type="checkbox" checked={editAdminAfterschool} onChange={e => setEditAdminAfterschool(e.target.checked)} />
+                    <span>시간표관리 권한</span>
+                  </label>
                 </div>
               </div>
               <div className="mt-5 flex justify-end space-x-2">
@@ -391,6 +402,7 @@ const handleGraduation = async () => {
                   </div>
                 </label>
                 <input type="file" onChange={handelBulkUpload} accept=".csv" id="bulkEditInput" className="hidden" />
+                <div className="text-xs text-gray-500">※ 엑셀에서 저장할 때 "CSV UTF-8(쉼표로 분리)" 형식으로 저장해야 한글이 깨지지 않습니다.</div>
               </div>
               <div className="mt-5 flex justify-end space-x-2">
                 <Button color="blue" fn={handelBulkEditSubmit}><div className="px-6">일괄 수정</div></Button>
@@ -426,6 +438,10 @@ const handleGraduation = async () => {
                   <label className="flex items-center space-x-2">
                     <input type="checkbox" checked={addAdminPetition} onChange={e => setAddAdminPetition(e.target.checked)} />
                     <span>청원관리 권한</span>
+                  </label>
+                  <label className="flex items-center space-x-2">
+                    <input type="checkbox" checked={addAdminAfterschool} onChange={e => setAddAdminAfterschool(e.target.checked)} />
+                    <span>시간표관리 권한</span>
                   </label>
                 </div>
                 <Input type="password" value={addPassword} fn={(d:string) => setAddPassword(d)} placeholder="비밀번호" />
@@ -466,6 +482,7 @@ const handleGraduation = async () => {
                   </div>
                 </label>
                 <input type="file" onChange={handelBulkUpload} accept=".csv" id="bulkInput" className="hidden" />
+                <div className="text-xs text-gray-500">※ 엑셀에서 저장할 때 "CSV UTF-8(쉼표로 분리)" 형식으로 저장해야 한글이 깨지지 않습니다.</div>
               </div>
               <div className="mt-5 flex justify-end space-x-2">
                 <Button color="blue" fn={handelBulkAddSubmit}><div className="px-6">일괄 추가</div></Button>
