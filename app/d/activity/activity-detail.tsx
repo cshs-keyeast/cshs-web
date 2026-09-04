@@ -330,9 +330,9 @@ export default function ActivityDetail({ data, fn }:{ data:any, fn():void }) {
             { (Number(user.user.admin) & 2) === 2 && (
               <div className="mt-4 absolute bottom-0 flex items-center flex-col right-7 left-5">
                 <div className="w-full relative z-10">
-                  <Button color="lightblue" fn={() => setAdminModal(true)}>
+                  {/* <Button color="lightblue" fn={() => setAdminModal(true)}>
                     <div className="w-full">어드민 패널</div>
-                  </Button>
+                  </Button> */}
                 </div>
               </div>
             )}
