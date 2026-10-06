@@ -25,9 +25,9 @@ export function InputButton({ value, disabled = false, fn }:{ value?:string | nu
   );
 };
 
-export function Textarea({ type = 'text', value, disabled = false, fn, placeholder, full = false, color = 'blue' }:{ type?:'text' | 'number', value?:string | number, disabled?:boolean, fn?(value:string | number):void, placeholder?:string, full?:boolean, color?:'blue' | 'teal' }) {
+export function Textarea({ type = 'text', value, disabled = false, fn, placeholder, full = false, color = 'blue', height = 'h-[105px]' }:{ type?:'text' | 'number', value?:string | number, disabled?:boolean, fn?(value:string | number):void, placeholder?:string, full?:boolean, color?:'blue' | 'teal', height?:string }) {
   return (
-    <textarea placeholder={placeholder} value={value} disabled={disabled} className={`w-full resize-none h-[105px] rounded-2xl hover:border-gray-300 focus:border-${color}-500 transition-all py-3 p-4 outline-none border-2 border-lightgray-100 ${full ? '' : 'max-w-[400px]'}'}`} onChange={(e) => {
+    <textarea placeholder={placeholder} value={value} disabled={disabled} className={`w-full resize-none ${height} rounded-2xl hover:border-gray-300 focus:border-${color}-500 transition-all py-3 p-4 outline-none border-2 border-lightgray-100 ${full ? '' : 'max-w-[400px]'}'}`} onChange={(e) => {
       if(type === 'number' && !isNaN(+e.target.value)) {
         fn && fn(+e.target.value);
       } else fn && fn(e.target.value);
