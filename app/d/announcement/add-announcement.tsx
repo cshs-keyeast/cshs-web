@@ -21,11 +21,16 @@ export default function AddAnnouncementButton(data) {
   
   const grade = data.grade;
   
+  function resetForm() {
+    setTitle('');
+    setContent('');
+  }
+
   async function postAnnounce() {
     if(loading) return;
 
-    if(title.length <= 0 || title.length > 30) {
-      return dispatch(setNotification({ type: "error", text: "제목은 비어있거나 20자 이상일 수 없어요" }));
+    if(title.length <= 0) {
+      return dispatch(setNotification({ type: "error", text: "제목은 비어있을 수 없어요." }));
     }
 
     if(content.length <= 0) {
@@ -59,7 +64,10 @@ export default function AddAnnouncementButton(data) {
       <AnimatePresence initial={false} mode="wait">
         { modal && <Modal handleClose={() => setModal(false)}>
           <div className="w-full md:w-[380px] h-[520px]">
-            <div className="flex justify-end">
+            <div className="flex justify-between items-center">
+              <div onClick={resetForm} className="text-sm text-lightgray-200 hover:text-zinc-800 transition-colors cursor-pointer">
+                입력 내용 초기화
+              </div>
               <div onClick={() => setModal(false)} className="p-1 rounded-full bg-gray-100 hover:bg-gray-200 transition-all cursor-pointer">
                 <svg className="w-6 h-6 p-1 rounded-full stroke-gray-400" fill="none" strokeWidth={2} stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
                   <path strokeLinecap="round" strokeLinejoin="round" d="M6 18 18 6M6 6l12 12" />
@@ -75,7 +83,7 @@ export default function AddAnnouncementButton(data) {
                 </div>
                 <div>
                   <div className="text-zinc-800 mb-1 mt-5">내용</div>
-                  <Textarea value={content} placeholder="내용을 입력하세요" fn={(value:string) => setContent(value)} />
+                  <Textarea height="h-[200px]" value={content} placeholder="내용을 입력하세요" fn={(value:string) => setContent(value)} />
                 </div>
               </div>
             </div>
